@@ -24,7 +24,7 @@ type Compiler struct {
 	meta    frontend.Metadata
 }
 
-// NewCompiler ...
+// NewCompiler creates a new Compiler with options.
 func NewCompiler(opts ...Option) *Compiler {
 	compiler := new(Compiler)
 	compiler.env = map[string]string{}
@@ -45,7 +45,8 @@ func NewCompiler(opts ...Option) *Compiler {
 	return compiler
 }
 
-// Compile compiles the Yaml to the common runtime.
+// Compile compiles the YAML configuration to the pipeline intermediate
+// representation configuration format.
 func (c *Compiler) Compile(conf *Config) *backend.Config {
 	spec := new(backend.Config)
 
