@@ -23,7 +23,7 @@ var compileCommand = cli.Command{
 		},
 		cli.StringFlag{
 			Name:  "out",
-			Value: "pipelines.json",
+			Value: "pipeline.json",
 		},
 		cli.StringSliceFlag{
 			Name: "volumes",
