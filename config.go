@@ -1,5 +1,10 @@
 package bitbucket
 
+import (
+	"path"
+	"strings"
+)
+
 // see https://confluence.atlassian.com/bitbucket/configure-bitbucket-pipelines-yml-792298910.html#Configurebitbucket-pipelines.yml-ci_branches
 
 type (
@@ -42,73 +47,28 @@ type (
 		// that are executed in sequence.
 		Script []string
 	}
-
-	//
-	// the below metadata structs are copied from github.com/cncd/config
-	// please do not change.
-	//
-
-	// MetaData defines runtime metadata.
-	MetaData struct {
-		Repo Repo
-		Curr Build
-		Prev Build
-		Job  Job
-		Sys  System
-	}
-
-	// Repo defines runtime metadata for a repository.
-	Repo struct {
-		Name    string
-		Link    string
-		Remote  string
-		Private bool
-	}
-
-	// Build defines runtime metadata for a build.
-	Build struct {
-		Number   int
-		Created  int64
-		Started  int64
-		Finished int64
-		Status   string
-		Event    string
-		Link     string
-		Target   string
-
-		Commit Commit
-	}
-
-	// Commit defines runtime metadata for a commit.
-	Commit struct {
-		Sha     string
-		Ref     string
-		Refspec string
-		Branch  string
-		Message string
-		Author  Author
-	}
-
-	// Author defines runtime metadata for a commit author.
-	Author struct {
-		Name   string
-		Email  string
-		Avatar string
-	}
-
-	// Job defines runtime metadata for a job.
-	Job struct {
-		Number int
-		Matrix map[string]string
-	}
-
-	// System defines runtime metadata for a ci/cd system.
-	System struct {
-		Name string
-		Link string
-		Arch string
-	}
 )
+
+// Pipeline returns the pipeline stage that best matches the branch
+// and ref. If there is no matching pipeline specific to the branch
+// or tag, the default pipeline is returned.
+func (c *Config) Pipeline(ref, branch string) Stage {
+	// match pipeline by tag name
+	tag := strings.TrimPrefix(ref, "refs/tags/")
+	for pattern, pipeline := range c.Pipelines.Tags {
+		if ok, _ := path.Match(pattern, tag); ok {
+			return pipeline
+		}
+	}
+	// match pipeline by branch name
+	for pattern, pipeline := range c.Pipelines.Branches {
+		if ok, _ := path.Match(pattern, branch); ok {
+			return pipeline
+		}
+	}
+	// use default
+	return c.Pipelines.Default
+}
 
 // UnmarshalYAML implements custom parsing for the stage section of the yaml
 // to cleanup the structure a bit.

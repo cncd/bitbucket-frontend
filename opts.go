@@ -31,6 +31,7 @@ func WithWorkspace(base, path string) Option {
 // metadata is also added to each container as environment variables.
 func WithMetadata(metadata frontend.Metadata) Option {
 	return func(compiler *Compiler) {
+		compiler.meta = metadata
 		for k, v := range metadata.Environ() {
 			compiler.env[k] = v
 		}

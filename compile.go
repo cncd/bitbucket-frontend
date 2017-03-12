@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/cncd/pipeline/pipeline/backend"
+	"github.com/cncd/pipeline/pipeline/frontend"
 	"github.com/docker/docker/reference"
 )
 
@@ -20,6 +21,7 @@ type Compiler struct {
 	env     map[string]string
 	base    string
 	path    string
+	meta    frontend.Metadata
 }
 
 // NewCompiler ...
@@ -47,9 +49,9 @@ func NewCompiler(opts ...Option) *Compiler {
 func (c *Compiler) Compile(conf *Config) *backend.Config {
 	spec := new(backend.Config)
 
-	section := conf.Pipelines.Default
-	// get matching tag stage
-	// get matching branch stage
+	// choose which pipeline to execute
+	// return the pipeline by name
+	section := conf.Pipeline(c.meta.Curr.Commit.Ref, c.meta.Curr.Commit.Branch)
 
 	// defines the default workspace
 	workingdir := path.Join(c.base, c.path)
