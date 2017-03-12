@@ -34,14 +34,6 @@ func NewCompiler(opts ...Option) *Compiler {
 		opt(compiler)
 	}
 	compiler.env["CI_WORKSPACE"] = path.Join(compiler.base, compiler.path)
-
-	// legacy code for DRONE_ plugins
-	for k, v := range compiler.env {
-		if strings.HasPrefix(k, "CI_") {
-			p := strings.Replace(k, "CI_", "DRONE_", 1)
-			compiler.env[p] = v
-		}
-	}
 	return compiler
 }
 
@@ -103,7 +95,6 @@ func (c *Compiler) Compile(conf *Config) *backend.Config {
 
 		envs := copyEnv(c.env)
 		envs["CI_SCRIPT"] = toScript(step.Script)
-		envs["DRONE_SCRIPT"] = toScript(step.Script)
 		envs["HOME"] = "/root"
 		envs["SHELL"] = "/bin/sh"
 

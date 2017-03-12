@@ -35,6 +35,10 @@ func WithMetadata(metadata frontend.Metadata) Option {
 		for k, v := range metadata.Environ() {
 			compiler.env[k] = v
 		}
+		// TODO deprecate these environment variables
+		for k, v := range metadata.EnvironDrone() {
+			compiler.env[k] = v
+		}
 	}
 }
 
@@ -46,6 +50,11 @@ func WithNetrc(username, password, machine string) Option {
 			"CI_NETRC_USERNAME": username,
 			"CI_NETRC_PASSWORD": password,
 			"CI_NETRC_MACHINE":  machine,
+
+			// TODO deprecate these environment variables
+			"DRONE_NETRC_USERNAME": username,
+			"DRONE_NETRC_PASSWORD": password,
+			"DRONE_NETRC_MACHINE":  machine,
 		},
 	)
 }
