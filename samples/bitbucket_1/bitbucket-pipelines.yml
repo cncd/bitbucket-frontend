@@ -1,0 +1,15 @@
+image: node:7.4.0
+
+clone:
+  depth: 25
+
+pipelines:
+  default:
+    - step:
+        image: golang:1.7
+        script:
+          - go version
+          - ls -la
+    - step:
+        script:
+          - node --version
