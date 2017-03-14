@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cncd/config-bitbucket"
+	"github.com/cncd/bitbucket-frontend"
 	"github.com/cncd/pipeline/pipeline/frontend"
 
 	"github.com/urfave/cli"
